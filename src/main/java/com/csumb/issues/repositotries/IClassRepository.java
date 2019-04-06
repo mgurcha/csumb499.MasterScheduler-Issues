@@ -1,5 +1,6 @@
 package com.csumb.issues.repositotries;
 
+import com.csumb.issues.entities.Class;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
