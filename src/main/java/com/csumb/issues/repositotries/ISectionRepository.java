@@ -1,6 +1,6 @@
 package com.csumb.issues.repositotries;
 
-import com.csumb.Administrative.entities.Section;
+import com.csumb.issues.entities.Section;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

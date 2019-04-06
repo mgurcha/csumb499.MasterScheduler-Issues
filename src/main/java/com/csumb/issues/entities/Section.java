@@ -3,7 +3,6 @@ package com.csumb.issues.entities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.util.Pair;
 
-import java.lang.Class;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
