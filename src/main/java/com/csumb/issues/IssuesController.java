@@ -2,6 +2,7 @@ package com.csumb.issues;
 
 import com.csumb.issues.entities.Section;
 import com.csumb.issues.entities.Student;
+import com.csumb.issues.entities.Teacher;
 import com.csumb.issues.repositotries.IClassRepository;
 import com.csumb.issues.repositotries.ISectionRepository;
 import com.csumb.issues.repositotries.IStudentRepository;
@@ -46,6 +47,7 @@ public class IssuesController {
         List<Student> students = studentRepository.findAll();
         List<String> errors = new ArrayList<>();
         for(Student s: students){
+            //student without 6 classes
             if(s.getSchedule().size()<6) {
                 errors.add("Does not have 6 classes: " + s.getId());
             }
@@ -59,11 +61,34 @@ public class IssuesController {
         List<Section> sections = sectionRepository.findAll();
         List<String> errors = new ArrayList<>();
         for(Section s: sections){
+            //section has no teacher
             if(s.getTeacherID().equals("")){
                 errors.add("No Teacher: " +
                         "   Class Name = " + s.getClassName()
                         +"  ,Period = " + s.getPeriod_num()
                         +"  ,ID: " + s.getId());
+            }
+        }
+        return errors;
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("teacherErrors")
+    public List<String> teacherErrors(){
+        List<Teacher> teachers = teacherRepository.findAll();
+        List<String> errors = new ArrayList<>();
+        for(Teacher t: teachers){
+            if(t.getPrep() == 0){
+                //teacher has no prep period
+                errors.add("No Prep Period: " +
+                        "   Name: " + t.getName()
+                        +"  ,Department: " + t.getDepartment());
+            }
+            //teacher has more students than max allotted
+            if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
+                errors.add("Max # Students Reached: " +
+                        "   Name: " + t.getName()
+                        +"  ,Department: " + t.getDepartment());
             }
         }
         return errors;
