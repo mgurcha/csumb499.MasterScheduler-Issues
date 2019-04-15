@@ -1,5 +1,6 @@
 package com.csumb.issues;
 
+import com.csumb.issues.entities.Class;
 import com.csumb.issues.entities.Section;
 import com.csumb.issues.entities.Student;
 import com.csumb.issues.entities.Teacher;
@@ -93,4 +94,46 @@ public class IssuesController {
         }
         return errors;
     }
+
+    @CrossOrigin("*")
+    @GetMapping("roomErrors")
+    public List<String> roomErrors(){
+         List<Section> sections = sectionRepository.findAll();
+         List<Section> sections2 = sectionRepository.findAll();
+         List<String> errors = new ArrayList<>();
+
+
+         for(Section c: sections){
+             for(Section a: sections2){
+                 if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
+                     //same room was issue for two classes in the same period
+                     errors.add("Same room number: " + " Section number: " + c.getSection_num()
+                     + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + "Room: " +a.getClassRoom());
+                 }
+             }
+
+        }
+
+        return errors;
+    }
+//        @CrossOrigin("*")
+//        @GetMapping("roomErrors")
+//        public List<String> roomErrors(){
+//            List<Class> classes = classRepository.findAll();
+//            List<String> errors = new ArrayList<>();
+//            for(Class c: classes){
+//                for(Class a: classes){
+//                    if(c.getClassRoom().contains("4")){
+//                        //same room was issue for two class in the same period
+//                        errors.add("Same room number: " + " Section number: " + c.getClassName()
+//                                + " Period: " + c.getClassRoom() + " Section number: " + a.getClassName()
+//                                + " Period: " + a.getClassRoom());
+//                    }
+//                }
+//
+//            }
+//
+//            return errors;
+//        }
+
 }
