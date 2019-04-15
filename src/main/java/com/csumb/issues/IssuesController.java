@@ -131,8 +131,12 @@ public class IssuesController {
              for(Section a: sections2){
                  if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
                      //same room was issue for two classes in the same period
-                     errors.add("Same room number: " + " Section number: " + c.getSection_num()
-                     + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + "Room: " +a.getClassRoom());
+                     if(c.getId() == a.getId()){
+                         errors.add("Same room number: " + " Section number: " + c.getSection_num()
+                                 + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + a.getSection_num()
+                                 + " Period: " + a.getPeriod_num() + "Room: " +a.getClassRoom());
+                     }
+
                  }
              }
 
@@ -140,24 +144,5 @@ public class IssuesController {
 
         return errors;
     }
-//        @CrossOrigin("*")
-//        @GetMapping("roomErrors")
-//        public List<String> roomErrors(){
-//            List<Class> classes = classRepository.findAll();
-//            List<String> errors = new ArrayList<>();
-//            for(Class c: classes){
-//                for(Class a: classes){
-//                    if(c.getClassRoom().contains("4")){
-//                        //same room was issue for two class in the same period
-//                        errors.add("Same room number: " + " Section number: " + c.getClassName()
-//                                + " Period: " + c.getClassRoom() + " Section number: " + a.getClassName()
-//                                + " Period: " + a.getClassRoom());
-//                    }
-//                }
-//
-//            }
-//
-//            return errors;
-//        }
 
 }
