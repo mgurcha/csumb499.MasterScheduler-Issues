@@ -65,14 +65,13 @@ public class IssuesController {
             if(s.getTeacherID().equals("")){
                 errors.add("No Teacher: " +
                         "   Class Name = " + s.getClassName()
-                        +"  ,Period = " + s.getPeriod_num()
-                        +"  ,ID: " + s.getId());
+                        +", Period = " + s.getPeriod_num()
+                        +", ID: " + s.getId());
             }
-            Set<String> store = new HashSet<>();
 
-            String classes = s.getClassRoom();
-            errors.add(classes);
-
+//            Set<String> store = new HashSet<>();
+//            String classes = s.getClassRoom();
+//            errors.add(classes);
 //            int count = Collections.frequency(sections, "432");
 //            errors.add("Count = " + count);
         }
