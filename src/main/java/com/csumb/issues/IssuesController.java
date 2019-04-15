@@ -1,12 +1,10 @@
 package com.csumb.issues;
 
+import com.csumb.issues.entities.Issue;
 import com.csumb.issues.entities.Section;
 import com.csumb.issues.entities.Student;
 import com.csumb.issues.entities.Teacher;
-import com.csumb.issues.repositotries.IClassRepository;
-import com.csumb.issues.repositotries.ISectionRepository;
-import com.csumb.issues.repositotries.IStudentRepository;
-import com.csumb.issues.repositotries.ITeacherRepository;
+import com.csumb.issues.repositotries.*;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,9 @@ public class IssuesController {
 
     @Autowired
     private ISectionRepository sectionRepository;
+
+    @Autowired
+    private IIssueRepository issueRepository;
 
     //http://localhost:8084/test
     @CrossOrigin(origins = "*")
@@ -57,25 +58,27 @@ public class IssuesController {
 
     @CrossOrigin(origins = "*")
     @GetMapping("sectionErrors")
-    public List<String> sectionErrors(){
+    public List<Issue> sectionErrors(){
         List<Section> sections = sectionRepository.findAll();
         List<String> errors = new ArrayList<>();
         for(Section s: sections){
             //section has no teacher
-            if(s.getTeacherID().equals("")){
-                errors.add("No Teacher: " +
-                        "   Class Name = " + s.getClassName()
-                        +", Period = " + s.getPeriod_num()
-                        +", ID: " + s.getId());
-            }
+            if(s.getTeacherID().equals("")) {
+                issueRepository.insert(new Issue("No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
+//                errors.add("No Teacher: " +
+//                        "   Class Name = " + s.getClassName()
+//                        +", Period = " + s.getPeriod_num()
+//                        +", ID: " + s.getId());
+//            }
 
+            }
 //            Set<String> store = new HashSet<>();
 //            String classes = s.getClassRoom();
 //            errors.add(classes);
 //            int count = Collections.frequency(sections, "432");
 //            errors.add("Count = " + count);
         }
-        return errors;
+        return issueRepository.findAll();
     }
 
 
