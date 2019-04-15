@@ -8,13 +8,13 @@ import com.csumb.issues.repositotries.ISectionRepository;
 import com.csumb.issues.repositotries.IStudentRepository;
 import com.csumb.issues.repositotries.ITeacherRepository;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class IssuesController {
@@ -47,7 +47,7 @@ public class IssuesController {
         List<Student> students = studentRepository.findAll();
         List<String> errors = new ArrayList<>();
         for(Student s: students){
-            //student without 6 classes
+            //student without 6 classes; can use !=
             if(s.getSchedule().size()<6) {
                 errors.add("Does not have 6 classes: " + s.getId());
             }
@@ -68,9 +68,18 @@ public class IssuesController {
                         +"  ,Period = " + s.getPeriod_num()
                         +"  ,ID: " + s.getId());
             }
+            Set<String> store = new HashSet<>();
+
+            String classes = s.getClassRoom();
+            errors.add(classes);
+
+//            int count = Collections.frequency(sections, "432");
+//            errors.add("Count = " + count);
         }
         return errors;
     }
+
+
 
     @CrossOrigin(origins = "*")
     @GetMapping("teacherErrors")
@@ -78,15 +87,30 @@ public class IssuesController {
         List<Teacher> teachers = teacherRepository.findAll();
         List<String> errors = new ArrayList<>();
         for(Teacher t: teachers){
-            if(t.getPrep() == 0){
-                //teacher has no prep period
-                errors.add("No Prep Period: " +
-                        "   Name: " + t.getName()
-                        +"  ,Department: " + t.getDepartment());
+            //Prep period at same time as a class
+            if(t.getPrep() == 1){
+               List<Section> classes = t.getSections();
+               for (Section c: classes){
+                   if(c.getPeriod_num() == t.getPrep()){
+                       String l = Integer.toString(c.getPeriod_num());
+                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
+                               ", Name: "+ t.getName() +
+                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
+                                + ", Class ID: " + c.getId() +
+                       ", Section Num: " + c.getSection_num() );
+                   }
+               }
             }
             //teacher has more students than max allotted
             if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
                 errors.add("Max # Students Reached: " +
+                        "   Name: " + t.getName()
+                        +"  ,Department: " + t.getDepartment());
+            }
+
+            if(t.getPrep() == -1){
+                //teacher has no prep period
+                errors.add("No Prep Period: " +
                         "   Name: " + t.getName()
                         +"  ,Department: " + t.getDepartment());
             }
