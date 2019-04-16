@@ -75,77 +75,20 @@ public class IssuesController {
         List<Section> sections = sectionRepository.findAll();
         List<String> errors = new ArrayList<>();
         List<Issue> sectionIssues = issueRepository.findAll();
+        issueRepository.deleteAll();
         for(Section s: sections) {
-//            for (Issue i : sectionIssues) {
-                //section has no teacher
+            //section has no teacher
                 try {
-                if (s.getTeacherID().equals("")) {
-                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
-                    //                errors.add("No Teacher: " +
-                    //                        "   Class Name = " + s.getClassName()
-                    //                        +", Period = " + s.getPeriod_num()
-                    //                        +", ID: " + s.getId());
-                    //            }
-//
-//                }
-//                for(Issue i: sectionIssues){
-
+                    if (s.getTeacherID().equals("")) {
+                        issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
+                    }
                 }
-
-                } catch (Exception e) {
+                catch (Exception e) {
                     return issueRepository.findAll();
                 }
-//            Set<String> store = new HashSet<>();
-//            String classes = s.getClassRoom();
-//            errors.add(classes);
-//            int count = Collections.frequency(sections, "432");
-//            errors.add("Count = " + count);
             }
-
-//        issueRepository.deleteAll();
-
         return issueRepository.findAll();
     }
-
-
-
-//    @CrossOrigin(origins = "*")
-//    @GetMapping("teacherIssues")
-//    public List<String> teacherErrors(){
-//        List<Teacher> teachers = teacherRepository.findAll();
-//        List<String> errors = new ArrayList<>();
-//        for(Teacher t: teachers){
-//            //Prep period at same time as a class
-//            if(t.getPrep() == 1){
-//               List<Section> classes = t.getSections();
-//               for (Section c: classes){
-//                   if(c.getPeriod_num() == t.getPrep()){
-//                       String l = Integer.toString(c.getPeriod_num());
-//                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
-//                               ", Name: "+ t.getName() +
-//                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
-//                                + ", Class ID: " + c.getId() +
-//                       ", Section Num: " + c.getSection_num() );
-//                   }
-//               }
-//            }
-//            //teacher has more students than max allotted
-//            if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
-//                errors.add("Max # Students Reached: " +
-//                        "   Name: " + t.getName()
-//                        +"  ,Department: " + t.getDepartment());
-//            }
-//
-//            if(t.getPrep() == -1){
-//                //teacher has no prep period
-//                errors.add("No Prep Period: " +
-//                        "   Name: " + t.getName()
-//                        +"  ,Department: " + t.getDepartment());
-//            }
-//        }
-//        return errors;
-//    }
-
 
 
     @CrossOrigin(origins = "*")
@@ -153,6 +96,7 @@ public class IssuesController {
     public List<TeacherIssue> teacherErrors(){
         List<Teacher> teachers = teacherRepository.findAll();
         List<String> errors = new ArrayList<>();
+        teacherIssueRepository.deleteAll();
         for(Teacher t: teachers) {
             try {
                 //Prep period at same time as a class
@@ -161,10 +105,26 @@ public class IssuesController {
                     for (Section c : classes) {
                         if (c.getPeriod_num() == t.getPrep()) {
                             String l = Integer.toString(c.getPeriod_num());
-                            teacherIssueRepository.insert(new TeacherIssue(t.getId(), "Prep Period at class time", c.getSection_num(), t.getName(), c.getClassName(), c.getId(), c.getPeriod_num(), c.getClassRoom(), t.getDepartment(), null));
+                            teacherIssueRepository.insert(new TeacherIssue(null, "Prep Period at class time", c.getSection_num(), t.getName(), c.getClassName(), c.getId(), c.getPeriod_num(), c.getClassRoom(), t.getDepartment(), t.getId()));
                         }
                     }
                 }
+
+                //teacher has more students than max allotted
+            if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
+                teacherIssueRepository.insert(new TeacherIssue(null, "Max # Students Reached", 0, t.getName(), null, null, 0, null, t.getDepartment(), t.getId()));
+//                errors.add("Max # Students Reached: " +
+//                        "   Name: " + t.getName()
+//                        +"  ,Department: " + t.getDepartment());
+            }
+
+            //teacher has no prep period
+            if(t.getPrep() == -1){
+                teacherIssueRepository.insert(new TeacherIssue(null, "No Prep Period", 0, t.getName(), null, null, 0, null, t.getDepartment(), t.getId()));
+//                errors.add("No Prep Period: " +
+//                        "   Name: " + t.getName()
+//                        +"  ,Department: " + t.getDepartment());
+            }
             }
             catch (Exception e){
                 return teacherIssueRepository.findAll();
@@ -173,6 +133,7 @@ public class IssuesController {
         }
         return teacherIssueRepository.findAll();
     }
+
 
     @CrossOrigin("*")
     @GetMapping("roomErrors")
