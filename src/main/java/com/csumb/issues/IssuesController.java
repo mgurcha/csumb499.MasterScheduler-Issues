@@ -74,29 +74,35 @@ public class IssuesController {
     public List<Issue> sectionErrors(){
         List<Section> sections = sectionRepository.findAll();
         List<String> errors = new ArrayList<>();
-//        for(Section s: sections){
-//            //section has no teacher
-//            try {
-//                if (s.getTeacherID().equals("")) {
-//                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
-//                    //                errors.add("No Teacher: " +
-//                    //                        "   Class Name = " + s.getClassName()
-//                    //                        +", Period = " + s.getPeriod_num()
-//                    //                        +", ID: " + s.getId());
-//                    //            }
+        List<Issue> sectionIssues = issueRepository.findAll();
+        for(Section s: sections) {
+//            for (Issue i : sectionIssues) {
+                //section has no teacher
+                try {
+                if (s.getTeacherID().equals("")) {
+                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
+                    //                errors.add("No Teacher: " +
+                    //                        "   Class Name = " + s.getClassName()
+                    //                        +", Period = " + s.getPeriod_num()
+                    //                        +", ID: " + s.getId());
+                    //            }
 //
 //                }
-//            }
-//            catch (Exception e){
-//                return issueRepository.findAll();
-//            }
-////            Set<String> store = new HashSet<>();
-////            String classes = s.getClassRoom();
-////            errors.add(classes);
-////            int count = Collections.frequency(sections, "432");
-////            errors.add("Count = " + count);
-//        }
-        issueRepository.deleteAll();
+//                for(Issue i: sectionIssues){
+
+                }
+
+                } catch (Exception e) {
+                    return issueRepository.findAll();
+                }
+//            Set<String> store = new HashSet<>();
+//            String classes = s.getClassRoom();
+//            errors.add(classes);
+//            int count = Collections.frequency(sections, "432");
+//            errors.add("Count = " + count);
+            }
+
+//        issueRepository.deleteAll();
 
         return issueRepository.findAll();
     }
