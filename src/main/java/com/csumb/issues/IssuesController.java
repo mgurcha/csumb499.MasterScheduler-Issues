@@ -68,41 +68,44 @@ public class IssuesController {
         return errors;
     }
 
+
     @CrossOrigin(origins = "*")
     @GetMapping("sectionErrors")
     public List<Issue> sectionErrors(){
         List<Section> sections = sectionRepository.findAll();
         List<String> errors = new ArrayList<>();
-        for(Section s: sections){
-            //section has no teacher
-            try {
-                if (s.getTeacherID().equals("")) {
-                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
-                    //                errors.add("No Teacher: " +
-                    //                        "   Class Name = " + s.getClassName()
-                    //                        +", Period = " + s.getPeriod_num()
-                    //                        +", ID: " + s.getId());
-                    //            }
+//        for(Section s: sections){
+//            //section has no teacher
+//            try {
+//                if (s.getTeacherID().equals("")) {
+//                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
+//                    //                errors.add("No Teacher: " +
+//                    //                        "   Class Name = " + s.getClassName()
+//                    //                        +", Period = " + s.getPeriod_num()
+//                    //                        +", ID: " + s.getId());
+//                    //            }
+//
+//                }
+//            }
+//            catch (Exception e){
+//                return issueRepository.findAll();
+//            }
+////            Set<String> store = new HashSet<>();
+////            String classes = s.getClassRoom();
+////            errors.add(classes);
+////            int count = Collections.frequency(sections, "432");
+////            errors.add("Count = " + count);
+//        }
+        issueRepository.deleteAll();
 
-                }
-            }
-            catch (Exception e){
-                return issueRepository.findAll();
-            }
-//            Set<String> store = new HashSet<>();
-//            String classes = s.getClassRoom();
-//            errors.add(classes);
-//            int count = Collections.frequency(sections, "432");
-//            errors.add("Count = " + count);
-        }
         return issueRepository.findAll();
     }
 
 
 
 //    @CrossOrigin(origins = "*")
-//    @GetMapping("teacherErrors")
-//    public List<TeacherIssue> teacherErrors(){
+//    @GetMapping("teacherIssues")
+//    public List<String> teacherErrors(){
 //        List<Teacher> teachers = teacherRepository.findAll();
 //        List<String> errors = new ArrayList<>();
 //        for(Teacher t: teachers){
@@ -112,12 +115,11 @@ public class IssuesController {
 //               for (Section c: classes){
 //                   if(c.getPeriod_num() == t.getPrep()){
 //                       String l = Integer.toString(c.getPeriod_num());
-//                       teacherIssueRepository.insert(new TeacherIssue("Prep Period at class time", c.getSection_num(), t.getName(), c.getClassName(), c.getId(), c.getPeriod_num(), c.getClassRoom(), t.getDepartment(), t.getId()));
-////                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
-////                               ", Name: "+ t.getName() +
-////                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
-////                                + ", Class ID: " + c.getId() +
-////                       ", Section Num: " + c.getSection_num() );
+//                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
+//                               ", Name: "+ t.getName() +
+//                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
+//                                + ", Class ID: " + c.getId() +
+//                       ", Section Num: " + c.getSection_num() );
 //                   }
 //               }
 //            }
@@ -135,8 +137,7 @@ public class IssuesController {
 //                        +"  ,Department: " + t.getDepartment());
 //            }
 //        }
-////        return errors;
-//        return teacherIssueRepository.findAll();
+//        return errors;
 //    }
 
 
