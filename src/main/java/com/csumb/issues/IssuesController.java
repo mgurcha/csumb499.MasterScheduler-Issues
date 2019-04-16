@@ -1,15 +1,13 @@
 package com.csumb.issues;
 
-import com.csumb.issues.entities.Issue;
-import com.csumb.issues.entities.Section;
-import com.csumb.issues.entities.Student;
-import com.csumb.issues.entities.Teacher;
+import com.csumb.issues.entities.*;
 import com.csumb.issues.repositotries.*;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -31,6 +29,9 @@ public class IssuesController {
 
     @Autowired
     private IIssueRepository issueRepository;
+
+    @Autowired
+    private ITeacherIssue teacherIssueRepository;
 
     //http://localhost:8084/test
     @CrossOrigin(origins = "*")
@@ -63,14 +64,19 @@ public class IssuesController {
         List<String> errors = new ArrayList<>();
         for(Section s: sections){
             //section has no teacher
-            if(s.getTeacherID().equals("")) {
-                issueRepository.insert(new Issue("No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
-//                errors.add("No Teacher: " +
-//                        "   Class Name = " + s.getClassName()
-//                        +", Period = " + s.getPeriod_num()
-//                        +", ID: " + s.getId());
-//            }
+            try {
+                if (s.getTeacherID().equals("")) {
+                    issueRepository.insert(new Issue(s.getId(), "No Teacher", s.getSection_num(), s.getClassName(), s.getPeriod_num(), s.getClassRoom()));
+                    //                errors.add("No Teacher: " +
+                    //                        "   Class Name = " + s.getClassName()
+                    //                        +", Period = " + s.getPeriod_num()
+                    //                        +", ID: " + s.getId());
+                    //            }
 
+                }
+            }
+            catch (Exception e){
+                return issueRepository.findAll();
             }
 //            Set<String> store = new HashSet<>();
 //            String classes = s.getClassRoom();
@@ -83,40 +89,70 @@ public class IssuesController {
 
 
 
+//    @CrossOrigin(origins = "*")
+//    @GetMapping("teacherErrors")
+//    public List<TeacherIssue> teacherErrors(){
+//        List<Teacher> teachers = teacherRepository.findAll();
+//        List<String> errors = new ArrayList<>();
+//        for(Teacher t: teachers){
+//            //Prep period at same time as a class
+//            if(t.getPrep() == 1){
+//               List<Section> classes = t.getSections();
+//               for (Section c: classes){
+//                   if(c.getPeriod_num() == t.getPrep()){
+//                       String l = Integer.toString(c.getPeriod_num());
+//                       teacherIssueRepository.insert(new TeacherIssue("Prep Period at class time", c.getSection_num(), t.getName(), c.getClassName(), c.getId(), c.getPeriod_num(), c.getClassRoom(), t.getDepartment(), t.getId()));
+////                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
+////                               ", Name: "+ t.getName() +
+////                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
+////                                + ", Class ID: " + c.getId() +
+////                       ", Section Num: " + c.getSection_num() );
+//                   }
+//               }
+//            }
+//            //teacher has more students than max allotted
+//            if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
+//                errors.add("Max # Students Reached: " +
+//                        "   Name: " + t.getName()
+//                        +"  ,Department: " + t.getDepartment());
+//            }
+//
+//            if(t.getPrep() == -1){
+//                //teacher has no prep period
+//                errors.add("No Prep Period: " +
+//                        "   Name: " + t.getName()
+//                        +"  ,Department: " + t.getDepartment());
+//            }
+//        }
+////        return errors;
+//        return teacherIssueRepository.findAll();
+//    }
+
+
+
     @CrossOrigin(origins = "*")
     @GetMapping("teacherErrors")
-    public List<String> teacherErrors(){
+    public List<TeacherIssue> teacherErrors(){
         List<Teacher> teachers = teacherRepository.findAll();
         List<String> errors = new ArrayList<>();
-        for(Teacher t: teachers){
-            //Prep period at same time as a class
-            if(t.getPrep() == 1){
-               List<Section> classes = t.getSections();
-               for (Section c: classes){
-                   if(c.getPeriod_num() == t.getPrep()){
-                       String l = Integer.toString(c.getPeriod_num());
-                       errors.add("Cannot have class at same time as prep - ID: " + t.getId() +
-                               ", Name: "+ t.getName() +
-                                       ", Prep Period: "+ Integer.toString(c.getPeriod_num())
-                                + ", Class ID: " + c.getId() +
-                       ", Section Num: " + c.getSection_num() );
-                   }
-               }
+        for(Teacher t: teachers) {
+            try {
+                //Prep period at same time as a class
+                if (t.getPrep() == 1) {
+                    List<Section> classes = t.getSections();
+                    for (Section c : classes) {
+                        if (c.getPeriod_num() == t.getPrep()) {
+                            String l = Integer.toString(c.getPeriod_num());
+                            teacherIssueRepository.insert(new TeacherIssue(t.getId(), "Prep Period at class time", c.getSection_num(), t.getName(), c.getClassName(), c.getId(), c.getPeriod_num(), c.getClassRoom(), t.getDepartment(), null));
+                        }
+                    }
+                }
             }
-            //teacher has more students than max allotted
-            if(t.getCurrentNumStudent() == t.getMaxNumStudent()){
-                errors.add("Max # Students Reached: " +
-                        "   Name: " + t.getName()
-                        +"  ,Department: " + t.getDepartment());
+            catch (Exception e){
+                return teacherIssueRepository.findAll();
             }
 
-            if(t.getPrep() == -1){
-                //teacher has no prep period
-                errors.add("No Prep Period: " +
-                        "   Name: " + t.getName()
-                        +"  ,Department: " + t.getDepartment());
-            }
         }
-        return errors;
+        return teacherIssueRepository.findAll();
     }
 }

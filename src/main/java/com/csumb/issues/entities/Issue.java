@@ -20,7 +20,8 @@ public class Issue {
 
     public Issue(){ }
 
-    public Issue(String issueType, int section_num, String name, int period_num, String classRoom ){
+    public Issue(String id, String issueType, int section_num, String name, int period_num, String classRoom ){
+        this.id  = id;
         this.issueType = issueType;
         this.section_num = section_num;
         this.name = name;
