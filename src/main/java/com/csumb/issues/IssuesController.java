@@ -1,7 +1,18 @@
 package com.csumb.issues;
 
+
+import com.csumb.issues.entities.Class;
+import com.csumb.issues.entities.Section;
+import com.csumb.issues.entities.Student;
+import com.csumb.issues.entities.Teacher;
+import com.csumb.issues.repositotries.IClassRepository;
+import com.csumb.issues.repositotries.ISectionRepository;
+import com.csumb.issues.repositotries.IStudentRepository;
+import com.csumb.issues.repositotries.ITeacherRepository;
+
 import com.csumb.issues.entities.*;
 import com.csumb.issues.repositotries.*;
+
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,4 +166,31 @@ public class IssuesController {
         }
         return teacherIssueRepository.findAll();
     }
+
+    @CrossOrigin("*")
+    @GetMapping("roomErrors")
+    public List<String> roomErrors(){
+         List<Section> sections = sectionRepository.findAll();
+         List<Section> sections2 = sectionRepository.findAll();
+         List<String> errors = new ArrayList<>();
+
+
+         for(Section c: sections){
+             for(Section a: sections2){
+                 if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
+                     //same room was issue for two classes in the same period
+                     if(c.getId() == a.getId()){
+                         errors.add("Same room number: " + " Section number: " + c.getSection_num()
+                                 + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + a.getSection_num()
+                                 + " Period: " + a.getPeriod_num() + "Room: " +a.getClassRoom());
+                     }
+
+                 }
+             }
+
+        }
+
+        return errors;
+    }
+
 }
