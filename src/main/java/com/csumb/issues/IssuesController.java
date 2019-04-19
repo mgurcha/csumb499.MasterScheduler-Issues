@@ -44,6 +44,9 @@ public class IssuesController {
     @Autowired
     private ITeacherIssue teacherIssueRepository;
 
+    @Autowired
+    private IRoomRepository roomRepository;
+
     //http://localhost:8084/test
     @CrossOrigin(origins = "*")
     @GetMapping("test")
@@ -137,28 +140,40 @@ public class IssuesController {
 
     @CrossOrigin("*")
     @GetMapping("roomErrors")
-    public List<String> roomErrors(){
+    public List<Room> roomErrors(){
          List<Section> sections = sectionRepository.findAll();
          List<Section> sections2 = sectionRepository.findAll();
          List<String> errors = new ArrayList<>();
 
+        roomRepository.deleteAll();
+        for(Section c: sections){
+            try{
+                for(Section a: sections2){
+                    if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
+                        //same room was issue for two classes in the same period
+                        if(c.getId() == a.getId()){
+                            roomRepository.insert(new Room(null, "Same Room Number",
+                                    c.getSection_num(), c.getClassName(), c.getPeriod_num(), c.getClassRoom(),
+                                    a.getSection_num(), a.getClassName(), a.getPeriod_num(), a.getClassRoom() ));
 
-         for(Section c: sections){
-             for(Section a: sections2){
-                 if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
-                     //same room was issue for two classes in the same period
-                     if(c.getId() == a.getId()){
-                         errors.add("Same room number: " + " Section number: " + c.getSection_num()
-                                 + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + a.getSection_num()
-                                 + " Period: " + a.getPeriod_num() + "Room: " +a.getClassRoom());
-                     }
+//                            errors.add("Same room number: " + " Section number: " + c.getSection_num()
+//                                    + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + a.getSection_num()
+//                                    + " Period: " + a.getPeriod_num() + "Room: " +a.getClassRoom());
+                        }
 
-                 }
-             }
+                    }
+                }
+            }
 
+            catch (Exception e){
+                return roomRepository.findAll();
+            }
         }
 
-        return errors;
+        return roomRepository.findAll();
+
     }
+
+
 
 }
