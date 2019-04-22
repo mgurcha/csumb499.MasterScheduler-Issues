@@ -47,6 +47,9 @@ public class IssuesController {
     @Autowired
     private IRoomRepository roomRepository;
 
+    @Autowired
+    private IStudentIssueRepository studentIssueRepository;
+
     //http://localhost:8084/test
     @CrossOrigin(origins = "*")
     @GetMapping("test")
@@ -59,16 +62,28 @@ public class IssuesController {
     //THIS STILL NEEDS TO BE REFACTORED
     @CrossOrigin(origins = "*")
     @GetMapping("studentErrors")
-    public List<String> studentErrors(){
+    public List<StudentIssue> studentErrors(){
         List<Student> students = studentRepository.findAll();
         List<String> errors = new ArrayList<>();
+        studentIssueRepository.deleteAll();
         for(Student s: students){
-            //student without 6 classes; can use !=
-            if(s.getSchedule().size()<6) {
-                errors.add("Does not have 6 classes: " + s.getId());
+            try{
+                //student without 6 classes; can use !=
+                if(s.getSchedule().size()<6) {
+                    studentIssueRepository.insert(new StudentIssue("Does not have 6 classes",s.getId(),s.getName(), s.getGrade(), s.getSchedule()));
+//                    errors.add("Does not have 6 classes: " + s.getId());
+                }
             }
+            catch (Exception e){
+                return studentIssueRepository.findAll();
+            }
+//            //student without 6 classes; can use !=
+//            if(s.getSchedule().size()<6) {
+//                errors.add("Does not have 6 classes: " + s.getId());
+//            }
         }
-        return errors;
+        return studentIssueRepository.findAll();
+//        return errors;
     }
 
 
