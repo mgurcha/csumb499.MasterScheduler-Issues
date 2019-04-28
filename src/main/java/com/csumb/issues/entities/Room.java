@@ -12,13 +12,14 @@ import java.util.Objects;
 public class Room {
 
     @Id
-    private String id;
     private String issueType;
+    private String id;
     private int section_num1;
     private String name1;
     private int period_num1;
     private String classRoom1;
 
+    private String id2;
     private int section_num2;
     private String name2;
     private int period_num2;
@@ -26,8 +27,9 @@ public class Room {
 
     public Room(){ }
 
-    public Room(String id, String issueType, int section_num1, String name1, int period_num1, String classRoom1, int section_num2, String name2, int period_num2, String classRoom2) {
+    public Room(String issueType, String id, int section_num1, String name1, int period_num1, String classRoom1, String id2, int section_num2, String name2, int period_num2, String classRoom2) {
         this.id = id;
+        this.id2 = id2;
         this.issueType = issueType;
         this.section_num1 = section_num1;
         this.name1 = name1;
@@ -37,6 +39,14 @@ public class Room {
         this.name2 = name2;
         this.period_num2 = period_num2;
         this.classRoom2 = classRoom2;
+    }
+
+    public String getId2() {
+        return id2;
+    }
+
+    public void setId2(String id2) {
+        this.id2 = id2;
     }
 
     public String getId() {
@@ -128,10 +138,11 @@ public class Room {
                 period_num1 == room.period_num1 &&
                 section_num2 == room.section_num2 &&
                 period_num2 == room.period_num2 &&
-                Objects.equals(id, room.id) &&
                 Objects.equals(issueType, room.issueType) &&
+                Objects.equals(id, room.id) &&
                 Objects.equals(name1, room.name1) &&
                 Objects.equals(classRoom1, room.classRoom1) &&
+                Objects.equals(id2, room.id2) &&
                 Objects.equals(name2, room.name2) &&
                 Objects.equals(classRoom2, room.classRoom2);
     }
@@ -139,6 +150,6 @@ public class Room {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, issueType, section_num1, name1, period_num1, classRoom1, section_num2, name2, period_num2, classRoom2);
+        return Objects.hash(issueType, id, section_num1, name1, period_num1, classRoom1, id2, section_num2, name2, period_num2, classRoom2);
     }
 }

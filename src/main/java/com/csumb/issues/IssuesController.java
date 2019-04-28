@@ -73,6 +73,9 @@ public class IssuesController {
                     studentIssueRepository.insert(new StudentIssue("Does not have 6 classes",s.getId(),s.getName(), s.getGrade(), s.getSchedule()));
 //                    errors.add("Does not have 6 classes: " + s.getId());
                 }
+                if(s.getSchedule().contains("No Class")){
+                    studentIssueRepository.insert(new StudentIssue("Does not have 6 classes",s.getId(),s.getName(), s.getGrade(), s.getSchedule()));
+                }
             }
             catch (Exception e){
                 return studentIssueRepository.findAll();
@@ -167,9 +170,9 @@ public class IssuesController {
                     if(c.getClassRoom().equals(a.getClassRoom()) && c.getPeriod_num() == a.getPeriod_num()){
                         //same room was issue for two classes in the same period
                         if(c.getId() == a.getId()){
-                            roomRepository.insert(new Room(null, "Same Room Number",
-                                    c.getSection_num(), c.getClassName(), c.getPeriod_num(), c.getClassRoom(),
-                                    a.getSection_num(), a.getClassName(), a.getPeriod_num(), a.getClassRoom() ));
+                            roomRepository.insert(new Room("Same Room Number",
+                                    c.getId(), c.getSection_num(), c.getClassName(), c.getPeriod_num(), c.getClassRoom(),
+                                    a.getId(),a.getSection_num(), a.getClassName(), a.getPeriod_num(), a.getClassRoom() ));
 
 //                            errors.add("Same room number: " + " Section number: " + c.getSection_num()
 //                                    + " Period: " + c.getPeriod_num()  + "Room: " +c.getClassRoom() + " Section number: "  + a.getSection_num()
